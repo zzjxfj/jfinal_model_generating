@@ -13,6 +13,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import com.jfinal.plugin.activerecord.Config;
+
 /**
  * @author zzjxfj@163.com
  * 创建时间  2018年1月11日 上午9:55:08	
@@ -67,18 +69,18 @@ public class CreatFileManage {
 	 * @param	creatFileClass	实体类字符串生成器
 	 * @throws SQLException 
 	 */
-	public CreatFileManage(List<String> tables, String packageName, int poolsize,Class<? extends CreatTableFile> creatFileClass) throws SQLException {
+	public CreatFileManage(List<String> tables,  TableToModel config) throws SQLException {
 		this.tables = tables;
-		this.creatFileClass=creatFileClass;
+		this.creatFileClass=config.getCreatTableFileClass();
 		if(creatFileClass==null )throw new SQLException("CreatTableFile is null!"); 
-		this.packageName = packageName;
+		this.packageName = config.getPackageName();
 		this.packagePath=PathTools.getPath()+packageName.replace('.', '/') + "/";
 		File file=new File(this.packagePath+"/base");
 		if(!file.exists()){  
 		    file.mkdirs(); 
 		}
 		
-		this.threadpool = Executors.newFixedThreadPool(poolsize);
+		this.threadpool = Executors.newFixedThreadPool(config.getCreateFileThreadSize());
 		this.map=new HashMap<String, Future<Boolean>>();
 	}
 	

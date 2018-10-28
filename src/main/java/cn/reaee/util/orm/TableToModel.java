@@ -144,7 +144,7 @@ public class TableToModel {
 		/**
 		 * 创建多线程文件生成器
 		 */
-		CreatFileManage cfm = new CreatFileManage(tables, packageName, createFileThreadSize,creatTableFileClass);
+		CreatFileManage cfm = new CreatFileManage(tables,this);
 		
 		/**
 		 * 设置基础继承类
@@ -161,20 +161,25 @@ public class TableToModel {
 		/**
 		 * 获取执行进度并显示
 		 */
-		List<String> list = cfm.getFinish();
-		int size=0;
-		while((list=cfm.getFinish())==null||list.size()<tables.size()){
-			if(list==null){
-				System.out.println(".....");
-			}
-			else if(size!=list.size()){
-				System.out.println("已完成："+list.size()+"个");
-				size=list.size();
+		int allCount=tables.size();
+		System.out.println("任务总数:"+allCount);
+		
+		int finishCount = cfm.getFinishCount();
+		System.out.println("已完成:"+finishCount);
+		
+		int backupCount=0;
+		
+		while((finishCount=cfm.getFinishCount())<allCount){
+			if(backupCount!=finishCount){
+				System.out.println("=============================================");
+				System.out.println("共"+allCount+"个任务,已完成："+finishCount+"个");
+				System.out.println("=============================================");
+				backupCount=finishCount;
 			}
 			Thread.sleep(steepChack);
 		}
 		
-		System.out.println("已全部完成,映射"+list.size()+"个表,每个表两个文件,一个映射文件工具类!共计个"+(list.size()*2+1)+"文件,请刷新项目!");
+		System.out.println("已全部完成,映射"+allCount+"个表,每个表两个文件,一个映射文件工具类!共计个"+(allCount*2+1)+"文件,请刷新项目!");
 		
 		/**
 		 * 任务完成，关闭线程池
@@ -225,7 +230,6 @@ public class TableToModel {
 		ResultSet tables = mata.getTables(currentCatalog, null, null, types);
 		while (tables.next()) {
 			list.add(tables.getString("TABLE_NAME"));
-			System.out.println(tables.getString("TABLE_NAME"));
 		}
 		con.close();
 		return list;

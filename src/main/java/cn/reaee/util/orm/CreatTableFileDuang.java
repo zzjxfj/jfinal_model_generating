@@ -171,14 +171,15 @@ public class CreatTableFileDuang extends CreatTableFile{
 		List<TabField> list =null;
 		try{
 			list = getTabFieldsByTableName(tablename, conn);
-			System.out.println(tablename+"\t:\t"+conn);
+			System.out.println("任务开始\t"+tablename);
 		}catch(Exception e){
-			System.err.println("表 "+tablename+" 不存在");
+			System.err.println("表不存在\t"+tablename);
 		}
 		
 		if(list!=null){
 			creatBaseClasee(list);
 			creatExtClasee();
+			System.err.println("任务完成\t"+tablename);
 		}
 		
 		if(conn!=null){
